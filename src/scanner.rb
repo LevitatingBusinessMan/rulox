@@ -6,9 +6,8 @@ require_relative "./logger"
 def scan(source)
 	@chars = source.split ""
 	@tokens = []
-	@current = 0
+	@start = @current = 0
 	@line = 1
-	@currentLexeme = ''
 	@skip = false
 
 	startScan
@@ -19,15 +18,14 @@ def scan(source)
 
 end
 
-def addToken(tokenType)
-	@tokens.push Token.new(tokenType, @currentLexeme, nil, @line)
+def addToken(tokenType, literal=nil)
+	@tokens.push Token.new(tokenType, @chars[@start..@current].join, literal, @line)
 	@currentLexeme = ""
 end
 
 # Compare next char, and skip it if matches
 def match(char)
 	if @chars[@current+1] == char
-		@currentLexeme = @currentLexeme + @chars[@current+1]
 		advance()
 		return true
 	else
@@ -35,8 +33,9 @@ def match(char)
 	end
 end
 
-def peek
-	@chars[@current+1]
+# Check next char
+def peek(where=1)
+	@chars[@current+where]
 end
 
 def advance
@@ -47,9 +46,7 @@ def startScan
 	while @current < @chars.length
 		c = @chars[@current]
 
-		@currentLexeme = c
-
-		p c
+		@start = @current
 
 		case c
 			when '('
@@ -68,27 +65,68 @@ def startScan
 				addToken(:MINUS)
 			when '+'
 				addToken(:PLUS)
-			when ';'
-				addToken(:SEMICOLON)
-			when '*'
-				addToken(:ASTERISk)
-			when '!'
-				addToken(match("=") ? :BANG_EQUAL : :BANG)
-			when '='
-				addToken(match("=") ? :EQUAL_EQUAL : :EQUAL)
-			when '<'
-				addToken(match("=") ? :LESS_EQUAL : :LESS)
-			when '>'
-				addToken(match("=") ? :GREATER_EQUAL : :GREATER)
+			when ';'; addToken(:SEMICOLON)
+			when '*'; addToken(:ASTERISk)
+			when '!'; addToken(match("=") ? :BANG_EQUAL : :BANG)
+			when '='; addToken(match("=") ? :EQUAL_EQUAL : :EQUAL)
+			when '<'; addToken(match("=") ? :LESS_EQUAL : :LESS)
+			when '>'; addToken(match("=") ? :GREATER_EQUAL : :GREATER)
 			when '/'
 				# comment
 				if match('/')
-					advance() while peek() != '\n' && peek() != nil
+					advance() while peek() != "\n" && peek() != nil
+				else
+					addToken(:SLASH)
 				end
-			when ' ', "\n"
+			when '"'
+				while peek() != '"' && peek() != nil
+					@line+=1 if peek() == "\n"
+					advance()
+				end
 
+				# EOF
+				if peek() == nil
+					error(@line, "Unterminated string")
+					@tokens.push nil
+				end
+
+				# Cover closing "
+				advance()
+
+				string = @chars[@start+1..@current-1].join
+
+				addToken(:STRING, string)
+
+			when "0".."9"
+				advance while peek() != nil && peek().is_int?
+				
+				# fractions
+				if peek() == "." && peek(2) != nil && peek(2).is_int?
+					
+					#cover .
+					advance
+
+					advance while peek() != nil && peek().is_int?
+				end
+				
+				addToken(:NUMBER, @chars[@start..@current].join.to_i)
+
+			#Identifiers (or keywords)
+			when /[A-Za-z_]+/
+				advance while /[A-Za-z_]/.match?(peek())
+
+				lexeme = @chars[@start..@current].join
+				if @keywords[lexeme]
+					addToken(@keywords[lexeme])
+				else 
+					addToken(:IDENTIFIER)
+				end
+
+			when "\s", "\t", "\r"
+			when "\n"
+				@line+=1
 			else
-				error(@line, "Unexpected character #{c}")
+				error(@line, "Unexpected character #{c.inspect}")
 				nil
 			end
 
@@ -96,3 +134,28 @@ def startScan
 
 	end
 end
+
+class String
+	def is_int?
+	  self.to_i.to_s == self
+	end
+  end
+
+@keywords = {
+	"and"	=>	:AND,
+	"class" =>	:CLASS,
+	"else"	=>	:ELSE,
+	"false" =>	:FALSE,
+	"for"	=>	:FOR,
+	"fun"	=>	:FUN,
+	"if"	=>	:IF,
+	"nil"	=>	:NIL,
+	"or"	=>	:OR,
+	"print"	=>  :PRINT,
+	"return"=> 	:RETURN,
+	"super"	=> 	:SUPER,
+	"this"	=> 	:THIS,
+	"true"	=> 	:TRUE,
+	"var"	=> 	:VAR,
+	"while"	=>  :WHILE
+}
