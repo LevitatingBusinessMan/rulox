@@ -3,6 +3,10 @@ Why Ruby? Because I hadn't used it in any recent project of mine and I miss it.
 The book doesn't cover a ruby implementation,
 but Ruby is simple enough that I should still be able to follow the instructions for writing `jlox`.
 
+Edit:
+Couple days in and I discovered Crystal which is objectively far superior than ruby,
+well I might rewrite it to crystal later.
+
 Although I tried to stay close to the `jlox` code, some things just look cooler in Ruby, and I am a sucker for good looking code.
 Aside from that I am more into FP than OOP so don't expect too many classes.
 The behavior should be relatively the same though.
