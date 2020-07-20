@@ -23,10 +23,10 @@ def addToken(tokenType, literal=nil)
 	@currentLexeme = ""
 end
 
-# Compare next char, and skip it if matches
-def match(char)
-	if @chars[@current+1] == char
-		advance()
+# Compare next char/string, and skip it if matches
+def match(string)
+	if @chars[@current+1..].join.start_with? string
+		string.length.times do advance() end
 		return true
 	else
 		return false
@@ -49,22 +49,14 @@ def startScan
 		@start = @current
 
 		case c
-			when '('
-				addToken(:LEFT_PAREN)
-			when ')'
-				addToken(:RIGHT_PAREN)
-			when '{'
-				addToken(:LEFT_BRACE)
-			when '}'
-				addToken(:RIGHT_BRACE)
-			when ','
-				addToken(:COMMA)
-			when '.'
-				addToken(:DOT)
-			when '-'
-				addToken(:MINUS)
-			when '+'
-				addToken(:PLUS)
+			when '('; addToken(:LEFT_PAREN)
+			when ')'; addToken(:RIGHT_PAREN)
+			when '{'; addToken(:LEFT_BRACE)
+			when '}'; addToken(:RIGHT_BRACE)
+			when ','; addToken(:COMMA)
+			when '.'; addToken(:DOT)
+			when '-'; addToken(:MINUS)
+			when '+'; addToken(:PLUS)
 			when ';'; addToken(:SEMICOLON)
 			when '*'; addToken(:ASTERISk)
 			when '!'; addToken(match("=") ? :BANG_EQUAL : :BANG)
@@ -72,12 +64,21 @@ def startScan
 			when '<'; addToken(match("=") ? :LESS_EQUAL : :LESS)
 			when '>'; addToken(match("=") ? :GREATER_EQUAL : :GREATER)
 			when '/'
+				
 				# comment
 				if match('/')
 					advance() while peek() != "\n" && peek() != nil
+				
+				#multiline comment
+				elsif match('*')
+					while peek() != nil && !match("*/")
+						@line+=1 if peek() == "\n"
+						advance
+					end
 				else
 					addToken(:SLASH)
 				end
+			
 			when '"'
 				while peek() != '"' && peek() != nil
 					@line+=1 if peek() == "\n"
