@@ -5,7 +5,7 @@ but Ruby is simple enough that I should still be able to follow the instructions
 
 Edit:
 Couple days in and I discovered [Crystal](https://crystal-lang.org/) which is objectively far superior than ruby,
-I might rewrite to crystal later. This means I could write the standard library in C with relative ease.
+I might rewrite to crystal later. This means I could write a standard library in C with relative ease.
 
 Although I tried to stay close to the `jlox` code, some things just look cooler in Ruby, and I am a sucker for good looking code.
 Aside from that I am more into FP than OOP so don't expect too many classes.
