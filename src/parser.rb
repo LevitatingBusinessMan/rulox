@@ -1,5 +1,6 @@
 require_relative "./expressions"
 require_relative "./logger"
+require_relative "./parseError"
 
 class Parser
 
@@ -9,7 +10,7 @@ class Parser
 
 		begin
 			return expression
-		rescue# ParseError => PE
+		rescue ParseError => error
 			return nil
 		end
 

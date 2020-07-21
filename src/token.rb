@@ -14,13 +14,3 @@ class Token
 
 end
 
-=begin
-newToken(tokentype, lexeme, literal, line) {
-	{
-		:tokentype: tokentype,
-		:lexeme: lexeme,
-		:literal: literal,
-		:line: line
-	}
-}
-=end

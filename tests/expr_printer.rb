@@ -16,7 +16,7 @@ output = AstPrinter.print expression
 puts output
 
 if output == "(* (- 123) (group 45.67))"
-	puts "Succes"
+	puts "Success"
 else 
 	raise "Failed"
 end

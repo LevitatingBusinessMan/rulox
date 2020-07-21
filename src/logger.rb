@@ -13,7 +13,11 @@ class Logger
 	end
 
 	def self.report(line, where="", message)
-		puts "[Line #{line}] Error#{where}: #{message}"
+		STDERR.puts "[Line #{line}] Error#{where}: #{message}"
+	end
+
+	def self.runtime_error(error)
+		STDERR.puts "[ERROR line #{error.token.line}]: #{error.message}"
 	end
 
 end
