@@ -67,7 +67,7 @@ def startScan
 				
 				# comment
 				if match('/')
-					advance() while peek() != "\n" && peek() != nil
+					advance while peek() != "\n" && peek() != nil
 				
 				#multiline comment
 				elsif match('*')
@@ -138,9 +138,9 @@ end
 
 class String
 	def is_int?
-	  self.to_i.to_s == self
+		self.to_i.to_s == self
 	end
-  end
+end
 
 @keywords = {
 	"and"	=>	:AND,
