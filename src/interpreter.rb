@@ -36,6 +36,12 @@ class Interpreter
 				left - right
 			when :SLASH
 				Checker.number expr.operator, right
+
+				# Don't divide by zero
+				if right == 0
+					raise LoxRuntimeError.new expr.operator, "Dividing by zero is not allowed"
+				end
+
 				left / right
 			when :ASTERISk
 				Checker.number expr.operator, right
