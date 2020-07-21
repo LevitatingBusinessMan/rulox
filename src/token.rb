@@ -1,15 +1,15 @@
 class Token
-	attr_reader :tokentype, :lexeme, :literal, :line
+	attr_reader :type, :lexeme, :literal, :line
 	
-	def initialize(tokentype, lexeme, literal, line)
-		@tokentype = tokentype
+	def initialize(type, lexeme, literal, line)
+		@type = type
 		@lexeme = lexeme
 		@literal = literal
 		@line = line
 	end
 
-	def toString
-		"#{@tokentype} #{@lexeme} #{@literal}"
+	def to_s
+		"#{@type} #{@literal}"
 	end
 
 end

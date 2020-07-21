@@ -4,20 +4,18 @@ require_relative "./logger"
 # A collection of functions that rely on global variables, because I still dislike classes
 
 class Scanner
-
 	def self.scan(source)
 		@chars = source.split ""
 		@tokens = []
 		@start = @current = 0
 		@line = 1
-		@skip = false
 	
 		startScan
 	
 		@tokens.push Token.new(:EOF, nil, nil, @line)
-	
-		p @tokens
-	
+
+		@tokens
+		
 	end
 
 	def self.addToken(tokenType, literal=nil)
@@ -89,7 +87,7 @@ class Scanner
 	
 					# EOF
 					if peek() == nil
-						error(@line, "Unterminated string")
+						Logger.errorl(@line, "Unterminated string")
 						@tokens.push nil
 					end
 	
@@ -129,7 +127,7 @@ class Scanner
 				when "\n"
 					@line+=1
 				else
-					error(@line, "Unexpected character #{c.inspect}")
+					Logger.errorl(@line, "Unexpected character #{c.inspect}")
 					nil
 				end
 	
