@@ -8,7 +8,8 @@ expressions = {
 	"Grouping" 	=> ["expression"],
 	"Literal" 	=> ["value"],
 	"Unary" 	=> ["operator", "right"],
-	"Variable"	=> ["name"]	
+	"Variable"	=> ["name"],
+	"Assignment" 	=> ["name", "expression"]
 }
 
 statements = {

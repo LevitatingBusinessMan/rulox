@@ -59,9 +59,29 @@ class Parser
 		ExpressionStmt.new expr
 	end
 
-	#expression → equality
+	#expression → assignment
 	def self.expression
-		return equality
+		return assignment
+	end
+
+	#assignment → IDENTIFIER "=" assignment | equality
+	def self.assignment
+		expr = equality;
+
+		if match :EQUAL
+			eq = previous
+			value = assignment
+
+			# Turn left hand into token (l-value)
+			if expr.class == Variable
+				name = expr.name
+				return Assignment.new(name, value)
+			end
+
+			error eq, "Invalid assignment target"
+		end
+
+		expr
 	end
 
 	#equality → comparison ( ( "!=" | "==" ) comparison )*

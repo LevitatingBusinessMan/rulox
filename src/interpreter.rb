@@ -15,6 +15,12 @@ class Interpreter
 		end
 	end
 
+	def self.visitAssignmentExpr expr
+		value = evaluate expr.expression
+
+		@environment.assign expr.name, value
+	end
+
 	def self.visitVariableExpr expr
 		@environment.get expr.name
 	end

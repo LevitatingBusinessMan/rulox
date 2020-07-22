@@ -66,3 +66,17 @@ class Variable
 
 end
 
+class Assignment
+	attr_reader :name, :expression
+
+	def initialize name, expression
+		@name = name
+		@expression = expression
+	end
+
+	def accept visitor
+		visitor.visitAssignmentExpr self
+	end
+
+end
+
