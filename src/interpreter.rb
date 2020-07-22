@@ -1,7 +1,9 @@
 require_relative "./runtimeError"
 require_relative "./logger"
+require_relative "./environment"
 
 class Interpreter
+	@environment = Environment.new
 
 	def self.interpret statements
 		begin
@@ -13,12 +15,23 @@ class Interpreter
 		end
 	end
 
-	def self.visitExpressionStmt exprStmt
-		evaluate exprStmt.expression
+	def self.visitVariableExpr expr
+		@environment.get expr.name
 	end
 
-	def self.visitPrintStmt printStmt
-		puts evaluate printStmt.expression
+	def self.visitVarDeclStmt stmt
+		value = nil
+		value = evaluate stmt.initializer if stmt.initializer
+
+		@environment.define stmt.name, value
+	end
+
+	def self.visitExpressionStmt stmt
+		evaluate stmt.expression
+	end
+
+	def self.visitPrintStmt stmt
+		puts evaluate stmt.expression
 	end
 
 	def self.evaluate expr

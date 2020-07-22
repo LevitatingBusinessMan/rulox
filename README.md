@@ -1,4 +1,4 @@
-This is my implementation of Lox, following the "crafting intepreters" book by Bob Nystrom.
+This is my implementation of Lox, following the [Crafting Interpreters](http://craftinginterpreters.com/) book by Bob Nystrom.
 Why Ruby? Because I hadn't used it in any recent project of mine and I miss it.
 The book doesn't cover a ruby implementation,
 but Ruby is simple enough that I should still be able to follow the instructions for writing `jlox`.

@@ -53,3 +53,16 @@ class Unary
 
 end
 
+class Variable
+	attr_reader :name
+
+	def initialize name
+		@name = name
+	end
+
+	def accept visitor
+		visitor.visitVariableExpr self
+	end
+
+end
+

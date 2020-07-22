@@ -12,7 +12,7 @@ def run(source)
 
 	statements = Parser.parse tokens
 
-	failed = statements == nil
+	failed = statements.include? nil
 	return if failed
 
 	Interpreter.interpret(statements)

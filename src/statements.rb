@@ -24,3 +24,17 @@ class Print
 
 end
 
+class VarDecl
+	attr_reader :name, :initializer
+
+	def initialize name, initializer
+		@name = name
+		@initializer = initializer
+	end
+
+	def accept visitor
+		visitor.visitVarDeclStmt self
+	end
+
+end
+

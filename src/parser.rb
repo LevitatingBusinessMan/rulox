@@ -10,35 +10,56 @@ class Parser
 		@index = 0
 		statements = []
 
+		statements.push decleration() while current.type != :EOF
+
+		statements	
+	end
+
+	#declaration → varDecl | statement
+	def self.decleration
 		begin
-			statements.push statement() while current.type != :EOF
-			return statements	
+			return varDecleration if match :VAR
+			return statement
 		rescue ParseError => error
+			synchronize
 			return nil
 		end
 	end
 
-	def self.statement
-		return printStmt() if match :PRINT
+	#varDecl → "var" IDENTIFIER ( "=" expression )? ";"
+	def self.varDecleration
+		name = assume :IDENTIFIER, "Expected variable name"
+		
+		#if value is set
+		initializer = nil
+		initializer = expression if match :EQUAL
 
-		return exprStmt()
+		assume :SEMICOLON, "Expect ';' after variable decleration"
+
+		VarDecl.new name, initializer
 	end
 
-	#printStmt → "print" expression ";" ;
+	#statement → printStmt | exprStmt
+	def self.statement
+		return printStmt if match :PRINT
+		return exprStmt
+	end
+
+	#printStmt → "print" expression ";"
 	def self.printStmt
 		value = expression
 		assume :SEMICOLON, "Expected ';' after expression"
 		Print.new value
 	end
 
-	#exprStmt  → expression ";" ;
+	#exprStmt  → expression ";"
 	def self.exprStmt
 		expr = expression
 		assume :SEMICOLON, "Expected ';' after expression"
 		ExpressionStmt.new expr
 	end
 
-	#expression → equality ;
+	#expression → equality
 	def self.expression
 		return equality
 	end
@@ -105,12 +126,14 @@ class Parser
 		primary
 	end
 
-	#primary → NUMBER | STRING | "false" | "true" | "nil" | "(" expression ")"
+	#primary → NUMBER | STRING | "false" | "true" | "nil" | "(" expression ")" | IDENTIFIER
 	def self.primary
 		return Literal.new false			if match :FALSE
 		return Literal.new true				if match :TRUE
 		return Literal.new nil				if match :NIL
 		return Literal.new previous.literal if match :NUMBER, :STRING
+		return Variable.new previous		if match :IDENTIFIER
+
 
 		if match :LEFT_PAREN
 			expr = expression
@@ -138,6 +161,7 @@ class Parser
 		if !match(type)
 			raise error current(), msg
 		end
+		previous
 	end
 
 	def self.error token, msg
@@ -146,10 +170,7 @@ class Parser
 	end
 
 	def self.synchronize
-
-		advance
-
-		while current != nil
+		while current.type != :EOF
 			
 			return if previous.type == :SEMICOLON
 

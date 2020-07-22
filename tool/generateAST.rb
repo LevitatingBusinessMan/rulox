@@ -7,12 +7,14 @@ expressions = {
 	"Binary" 	=> ["left", "operator", "right"],
 	"Grouping" 	=> ["expression"],
 	"Literal" 	=> ["value"],
-	"Unary" 	=> ["operator", "right"]
+	"Unary" 	=> ["operator", "right"],
+	"Variable"	=> ["name"]	
 }
 
 statements = {
 	"ExpressionStmt"	=> ["expression"],
-	"Print"				=> ["expression"]
+	"Print"				=> ["expression"],
+	"VarDecl"			=> ["name", "initializer"]
 }
 
 def write type, list
@@ -33,7 +35,7 @@ def write type, list
 	end
 
 	def accept visitor
-		visitor.visit#{name}#{name == "ExpressionStmt" ? "" : type} self
+		visitor.visit#{name}#{name.end_with?("Stmt") || name.end_with?("Expr") ? "" : type} self
 	end
 
 end
