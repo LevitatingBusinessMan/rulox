@@ -13,5 +13,3 @@ The behavior should be relatively the same though.
 
 I wanted to write my first interpreter in a scripting language, because that seemed more fun and less serious.
 But it quickly made me realize that I have adapted so much to the typing systems of C and Rust, that I can hardly go without.
-Which makes me wish there was a scripting language with static types that doesn't transpile to JS.
-Maybe I could make my own some time.

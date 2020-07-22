@@ -3,14 +3,22 @@ require_relative "./logger"
 
 class Interpreter
 
-	#Just calls evaluate, but checks for errors
-	def self.interpret expr
+	def self.interpret statements
 		begin
-			evaluate expr
+			statements.each do |stmt|
+				stmt.accept self
+			end
 		rescue LoxRuntimeError => error
 			Logger.runtime_error error
-			nil
 		end
+	end
+
+	def self.visitExpressionStmt exprStmt
+		evaluate exprStmt.expression
+	end
+
+	def self.visitPrintStmt printStmt
+		puts evaluate printStmt.expression
 	end
 
 	def self.evaluate expr

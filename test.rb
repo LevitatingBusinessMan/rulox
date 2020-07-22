@@ -13,6 +13,14 @@ class Test
 		p @foo
 	end
 
+	def self.public_c
+		private_c
+	end
+
+	def private_c
+		p "private"
+	end
+
 end
 
 Test.foo

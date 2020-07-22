@@ -12,6 +12,7 @@ class Binary
 	end
 
 end
+
 class Grouping
 	attr_reader :expression
 
@@ -24,6 +25,7 @@ class Grouping
 	end
 
 end
+
 class Literal
 	attr_reader :value
 
@@ -36,6 +38,7 @@ class Literal
 	end
 
 end
+
 class Unary
 	attr_reader :operator, :right
 
@@ -49,3 +52,4 @@ class Unary
 	end
 
 end
+

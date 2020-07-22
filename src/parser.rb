@@ -1,4 +1,5 @@
 require_relative "./expressions"
+require_relative "./statements"
 require_relative "./logger"
 require_relative "./parseError"
 
@@ -7,13 +8,34 @@ class Parser
 	def self.parse(tokens)
 		@tokens = tokens
 		@index = 0
+		statements = []
 
 		begin
-			return expression
+			statements.push statement() while current.type != :EOF
+			return statements	
 		rescue ParseError => error
 			return nil
 		end
+	end
 
+	def self.statement
+		return printStmt() if match :PRINT
+
+		return exprStmt()
+	end
+
+	#printStmt → "print" expression ";" ;
+	def self.printStmt
+		value = expression
+		assume :SEMICOLON, "Expected ';' after expression"
+		Print.new value
+	end
+
+	#exprStmt  → expression ";" ;
+	def self.exprStmt
+		expr = expression
+		assume :SEMICOLON, "Expected ';' after expression"
+		ExpressionStmt.new expr
 	end
 
 	#expression → equality ;

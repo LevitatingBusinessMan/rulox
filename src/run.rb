@@ -10,12 +10,11 @@ def run(source)
 	failed = tokens.include? nil
 	return if failed
 
-	ast = Parser.parse tokens
+	statements = Parser.parse tokens
 
-	failed = ast == nil
+	failed = statements == nil
 	return if failed
 
-	value = Interpreter.interpret ast
-	p value
+	Interpreter.interpret(statements)
 
 end
