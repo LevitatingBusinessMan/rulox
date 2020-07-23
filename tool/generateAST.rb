@@ -1,15 +1,16 @@
 require 'pathname'
 
-return puts "Please specify src directory" if ARGV.length < 1
+exit puts "Please specify src directory" if ARGV.length < 1
 @dir = Pathname.new ARGV[0]
 
 expressions = {
-	"Binary" 	=> ["left", "operator", "right"],
-	"Grouping" 	=> ["expression"],
-	"Literal" 	=> ["value"],
-	"Unary" 	=> ["operator", "right"],
-	"Variable"	=> ["name"],
-	"Assignment" 	=> ["name", "expression"]
+	"Binary" 		=> ["left", "operator", "right"],
+	"Grouping" 		=> ["expression"],
+	"Literal" 		=> ["value"],
+	"Unary" 		=> ["operator", "right"],
+	"Variable"		=> ["name"],
+	"Assignment" 	=> ["name", "expression"],
+	"Ternary"		=> ["condition", "first", "second"]
 }
 
 statements = {

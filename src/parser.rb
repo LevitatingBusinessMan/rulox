@@ -15,7 +15,7 @@ class Parser
 		statements	
 	end
 
-	# For the REPL, parse only expressoin
+	# For the REPL, parse only expression
 	def self.parseExpression(tokens)
 		@tokens = tokens
 		@index = 0
@@ -85,13 +85,13 @@ class Parser
 		return assignment
 	end
 
-	#assignment → IDENTIFIER "=" assignment | equality
+	#assignment → IDENTIFIER "=" assignment | ternary
 	def self.assignment
-		expr = equality;
+		expr = ternary;
 
 		if match :EQUAL
 			eq = previous
-			value = assignment
+			value = expression
 
 			# Turn left hand into token (l-value)
 			if expr.class == Variable
@@ -100,6 +100,24 @@ class Parser
 			end
 
 			error eq, "Invalid assignment target"
+		end
+
+		expr
+	end
+
+	#ternary -> expression "?" expression ":" expression | equality
+	def self.ternary
+		expr = equality
+
+		if match :QUESTION
+			qm = previous
+			first_option = expression
+
+			error qm, "Expected ':' in ternary expression" if !match :COLON
+			
+			second_option = expression
+
+			expr = Ternary.new(expr, first_option, second_option)
 		end
 
 		expr

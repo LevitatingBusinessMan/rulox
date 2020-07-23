@@ -15,6 +15,14 @@ class Interpreter
 		end
 	end
 
+	def self.visitTernaryExpr expr
+		if truthy? evaluate expr.condition
+			return evaluate expr.first
+		else
+			return evaluate expr.second
+		end
+	end
+
 	def self.visitBlockStmt stmt
 		executeBlock stmt.statements
 	end

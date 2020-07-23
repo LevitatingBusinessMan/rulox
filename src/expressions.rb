@@ -80,3 +80,18 @@ class Assignment
 
 end
 
+class Ternary
+	attr_reader :condition, :first, :second
+
+	def initialize condition, first, second
+		@condition = condition
+		@first = first
+		@second = second
+	end
+
+	def accept visitor
+		visitor.visitTernaryExpr self
+	end
+
+end
+
