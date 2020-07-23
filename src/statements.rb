@@ -38,3 +38,16 @@ class VarDecl
 
 end
 
+class Block
+	attr_reader :statements
+
+	def initialize statements
+		@statements = statements
+	end
+
+	def accept visitor
+		visitor.visitBlockStmt self
+	end
+
+end
+

@@ -17,6 +17,7 @@ class Parser
 
 	#declaration → varDecl | statement
 	def self.decleration
+		#raise "NO" if check :RIGHT_BRACE
 		begin
 			return varDecleration if match :VAR
 			return statement
@@ -39,10 +40,20 @@ class Parser
 		VarDecl.new name, initializer
 	end
 
-	#statement → printStmt | exprStmt
+	#statement → printStmt | exprStmt | block
 	def self.statement
 		return printStmt if match :PRINT
+		return block if match :LEFT_BRACE
 		return exprStmt
+	end
+
+	def self.block
+		statements = []
+		statements.push decleration while !check(:RIGHT_BRACE) && !check(:EOF)
+
+		assume :RIGHT_BRACE, "Expected closing '}'"
+		
+		Block.new statements
 	end
 
 	#printStmt → "print" expression ";"

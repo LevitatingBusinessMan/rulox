@@ -15,7 +15,8 @@ expressions = {
 statements = {
 	"ExpressionStmt"	=> ["expression"],
 	"Print"				=> ["expression"],
-	"VarDecl"			=> ["name", "initializer"]
+	"VarDecl"			=> ["name", "initializer"],
+	"Block"				=> ["statements"]
 }
 
 def write type, list

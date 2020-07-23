@@ -15,6 +15,10 @@ class Interpreter
 		end
 	end
 
+	def self.visitBlockStmt stmt
+		executeBlock stmt.statements
+	end
+
 	def self.visitAssignmentExpr expr
 		value = evaluate expr.expression
 
@@ -121,6 +125,19 @@ class Interpreter
 			when :BANG
 				!truthy? right
 		end
+
+	end
+
+	def self.executeBlock statements
+		previous_environment = @environment
+		@environment = Environment.new @environment
+
+		statements.each do |stmt|
+			stmt.accept self
+		end
+
+		# discard current env and use previous
+		@environment = previous_environment
 
 	end
 
