@@ -212,14 +212,11 @@ class Parser
 
 	def self.synchronize
 		while current.type != :EOF
-			
+			advance
+
 			return if previous.type == :SEMICOLON
 
-			if [:CLASS, :FUN, :VAR, :FOR, :IF, :WHILE, :PRINT, :RETURN].include? current.type
-				return
-			end
-
-			advance
+			return if [:CLASS, :FUN, :VAR, :FOR, :IF, :WHILE, :PRINT, :RETURN].include? current.type
 		end
 	end
 
