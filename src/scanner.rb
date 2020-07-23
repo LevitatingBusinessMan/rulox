@@ -94,19 +94,20 @@ class Scanner
 				when '"'
 					while peek() != '"' && peek() != nil
 						@line+=1 if peek() == "\n"
+						advance if peek() == '\\'
 						advance()
 					end
 	
 					# EOF
 					if peek() == nil
 						Logger.errorl(@line, "Unterminated string")
-						@tokens.push nil
+						@failed = true
 					end
 	
 					# Cover closing "
 					advance()
 	
-					string = @chars[@start+1..@current-1].join
+					string = @chars[@start+1..@current-1].join.gsub(/\\(?!\\)/,"")
 	
 					addToken(:STRING, string)
 	
