@@ -71,7 +71,12 @@ class Interpreter
 	end
 
 	def self.visitPrintStmt stmt
-		puts evaluate stmt.expression
+		value = evaluate stmt.expression
+		if value.class == NilClass
+			puts "nil" 
+		else
+			puts evaluate stmt.expression
+		end
 	end
 
 	def self.evaluate expr
