@@ -3,7 +3,12 @@ require_relative "./run"
 
 def runPrompt()
 	while source = Readline.readline("> ", true)
-		run(source)
+		# When no ";" assume to be expression
+		if source.end_with? ';';
+			run source
+		else
+			evaluate source
+		end
 	end
 	puts
 end

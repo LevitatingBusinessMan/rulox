@@ -15,9 +15,19 @@ class Parser
 		statements	
 	end
 
+	# For the REPL, parse only expressoin
+	def self.parseExpression(tokens)
+		@tokens = tokens
+		@index = 0
+
+		begin
+			expression
+		rescue
+		end
+	end
+
 	#declaration → varDecl | statement
 	def self.decleration
-		#raise "NO" if check :RIGHT_BRACE
 		begin
 			return varDecleration if match :VAR
 			return statement
