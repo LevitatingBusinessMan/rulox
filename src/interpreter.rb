@@ -15,6 +15,20 @@ class Interpreter
 		end
 	end
 
+	def self.visitLogicalExpr expr
+		left = evaluate expr.left
+
+		if expr.operator.type == :OR
+			return left if truthy? left
+		
+		# AND
+		else
+			return left if !truthy? left
+		end
+
+		return evaluate expr.right
+	end
+
 	def self.visitIfStmt stmt
 		if truthy? evaluate stmt.condition
 			execute stmt.thenBranch

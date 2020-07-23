@@ -10,12 +10,13 @@ expressions = {
 	"Unary" 		=> ["operator", "right"],
 	"Variable"		=> ["name"],
 	"Assignment" 	=> ["name", "expression"],
-	"Ternary"		=> ["condition", "first", "second"]
+	"Ternary"		=> ["condition", "first", "second"],
+	"Logical"		=> ["left", "operator", "right"]
 }
 
 statements = {
 	"ExpressionStmt"	=> ["expression"],
-	"PrintStmt"				=> ["expression"],
+	"PrintStmt"			=> ["expression"],
 	"VarDecl"			=> ["name", "initializer"],
 	"Block"				=> ["statements"],
 	"IfStmt"			=> ["condition", "thenBranch", "elseBranch"]

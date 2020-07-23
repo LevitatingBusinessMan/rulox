@@ -95,3 +95,18 @@ class Ternary
 
 end
 
+class Logical
+	attr_reader :left, :operator, :right
+
+	def initialize left, operator, right
+		@left = left
+		@operator = operator
+		@right = right
+	end
+
+	def accept visitor
+		visitor.visitLogicalExpr self
+	end
+
+end
+

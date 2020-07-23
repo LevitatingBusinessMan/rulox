@@ -118,19 +118,45 @@ class Parser
 		expr
 	end
 
-	#ternary -> expression "?" expression ":" ternary | equality
+	#ternary -> logicOr "?" logicOr ":" ternary | logicOr
 	def self.ternary
-		expr = equality
+		expr = logicOr
 
 		if match :QUESTION
 			qm = previous
-			first_option = expression
+			first_option = logicOr
 
 			error qm, "Expected ':' in ternary expression" if !match :COLON
 			
-			second_option = expression
+			second_option = ternary
 
 			expr = Ternary.new(expr, first_option, second_option)
+		end
+
+		expr
+	end
+
+	#logicOr -> logicAnd ( "or" logicAnd )*
+	def self.logicOr
+		expr = logicAnd
+
+		while match :OR
+			operator = previous
+			right = logicAnd
+			expr = Logical.new(expr, operator, right)
+		end
+	
+		expr
+	end
+
+	#logicOr -> equality ( "and" equality )*
+	def self.logicAnd
+		expr = equality
+
+		while match :AND
+			operator = previous
+			right = equality
+			expr = Logical.new(expr, operator, right)
 		end
 
 		expr
