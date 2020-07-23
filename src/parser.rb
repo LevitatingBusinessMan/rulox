@@ -50,11 +50,24 @@ class Parser
 		VarDecl.new name, initializer
 	end
 
-	#statement → printStmt | exprStmt | block
+	#statement → printStmt | exprStmt | ifStmt | block
 	def self.statement
+		return ifStmt if match :IF
 		return printStmt if match :PRINT
 		return block if match :LEFT_BRACE
 		return exprStmt
+	end
+
+	#ifStmt "if" "(" expression ")" statement ("else" statement)?
+	def self.ifStmt
+		assume :LEFT_PAREN, "Expected '(' after 'if' keyword"
+		condition = expression
+		assume :RIGHT_PAREN, "Expected ') after 'if' condition"
+
+		thenBranch = statement
+		elseBranch = (match :ELSE) ? statement : nil
+
+		IfStmt.new(condition, thenBranch, elseBranch)
 	end
 
 	def self.block
@@ -70,7 +83,7 @@ class Parser
 	def self.printStmt
 		value = expression
 		assume :SEMICOLON, "Expected ';' after expression"
-		Print.new value
+		PrintStmt.new value
 	end
 
 	#exprStmt  → expression ";"

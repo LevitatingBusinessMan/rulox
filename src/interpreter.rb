@@ -8,10 +8,18 @@ class Interpreter
 	def self.interpret statements
 		begin
 			statements.each do |stmt|
-				stmt.accept self
+				execute stmt
 			end
 		rescue LoxRuntimeError => error
 			Logger.runtime_error error
+		end
+	end
+
+	def self.visitIfStmt stmt
+		if truthy? evaluate stmt.condition
+			execute stmt.thenBranch
+		elsif stmt.elseBranch
+			execute stmt.elseBranch
 		end
 	end
 
@@ -54,6 +62,10 @@ class Interpreter
 
 	def self.evaluate expr
 		expr.accept self
+	end
+
+	def self.execute stmt
+		stmt.accept self
 	end
 
 	def self.truthy? var

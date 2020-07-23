@@ -11,7 +11,7 @@ class ExpressionStmt
 
 end
 
-class Print
+class PrintStmt
 	attr_reader :expression
 
 	def initialize expression
@@ -47,6 +47,21 @@ class Block
 
 	def accept visitor
 		visitor.visitBlockStmt self
+	end
+
+end
+
+class IfStmt
+	attr_reader :condition, :thenBranch, :elseBranch
+
+	def initialize condition, thenBranch, elseBranch
+		@condition = condition
+		@thenBranch = thenBranch
+		@elseBranch = elseBranch
+	end
+
+	def accept visitor
+		visitor.visitIfStmt self
 	end
 
 end
