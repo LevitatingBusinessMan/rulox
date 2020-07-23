@@ -11,9 +11,13 @@ Although I tried to stay close to the `jlox` code, some things just look cooler 
 Aside from that I am more into FP than OOP so don't expect too many classes.
 The behavior should be relatively the same though.
 
-I did add some extra stuff, like a ternary operator.
+I did add some extra stuff, like adding a ternary operator.
 Making this interpreter is like an exercise to me,
 and it wouldn't be challenging if I didn't try to do some stuff on my own.
 
 I wanted to write my first interpreter in a scripting language, because that seemed more fun and less serious.
 But it quickly made me realize that I have adapted so much to the typing systems of C and Rust, that I can hardly go without.
+
+Additional stuff (that weren't challenges):
+* Both `or`, `and` and `||`, `&&` work
+* Ternary operator

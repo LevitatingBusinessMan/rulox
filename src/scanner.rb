@@ -9,9 +9,12 @@ class Scanner
 		@tokens = []
 		@start = @current = 0
 		@line = 1
+		@failed = false
 	
 		startScan
 	
+		return nil if @failed
+
 		@tokens.push Token.new(:EOF, nil, nil, @line)
 
 		@tokens
@@ -42,6 +45,11 @@ class Scanner
 		@current+=1
 	end
 
+	def self.unexpected
+		Logger.errorl(@line, "Unexpected character #{@chars[@current].inspect}")
+		@failed = true
+	end
+
 	def self.startScan
 		while @current < @chars.length
 			c = @chars[@current]
@@ -65,6 +73,8 @@ class Scanner
 				when '='; addToken(match("=") ? :EQUAL_EQUAL : :EQUAL)
 				when '<'; addToken(match("=") ? :LESS_EQUAL : :LESS)
 				when '>'; addToken(match("=") ? :GREATER_EQUAL : :GREATER)
+				when '|'; if match("|") then addToken(:OR) else unexpected end
+				when '&'; if match("&") then addToken(:AND)  else unexpected end
 				when '/'
 					
 					# comment
@@ -129,11 +139,10 @@ class Scanner
 				when "\n"
 					@line+=1
 				else
-					Logger.errorl(@line, "Unexpected character #{c.inspect}")
-					nil
+					unexpected
 				end
 	
-			advance()
+			advance
 	
 		end
 	end

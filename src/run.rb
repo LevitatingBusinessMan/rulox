@@ -6,7 +6,7 @@ require_relative "./interpreter"
 def run(source)
 
 	tokens = Scanner.scan(source)
-	return if tokens.include? nil
+	return if !tokens
 
 	statements = Parser.parse tokens
 	return if statements.include? nil
@@ -18,11 +18,11 @@ end
 #For evaluating expressions
 def evaluate tokens
 	tokens = Scanner.scan(tokens)
-	return if tokens.include? nil
+	return if !tokens
 
 	expression = Parser.parseExpression tokens
 	return if !expression
 
 	require_relative "./statements"
-	Interpreter.interpret [Print.new(expression)]
+	Interpreter.interpret [PrintStmt.new(expression)]
 end
