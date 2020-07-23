@@ -118,7 +118,7 @@ class Parser
 		expr
 	end
 
-	#ternary -> expression "?" expression ":" expression | equality
+	#ternary -> expression "?" expression ":" ternary | equality
 	def self.ternary
 		expr = equality
 
