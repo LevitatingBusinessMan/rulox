@@ -213,12 +213,22 @@ class Parser
 		expr
 	end
 	
-	#unary → ( "!" | "-" ) unary | primary
+	#unary → ( "!" | "-" ) unary | ruby
 	def self.unary
 		if match(:BANG, :MINUS)
 			operator = previous
 			right = unary
 			return Unary.new(operator, right)
+		end
+
+		ruby
+	end
+
+	#ruby -> "ruby" expression | primary
+	def self.ruby
+		if match :RUBY
+			code = expression
+			return Ruby.new(code)
 		end
 
 		primary

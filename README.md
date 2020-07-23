@@ -21,3 +21,4 @@ But it quickly made me realize that I have adapted so much to the typing systems
 Additional stuff (that weren't challenges):
 * Both `or`, `and` and `||`, `&&` work
 * Ternary operator
+* `ruby` keyword to evaluate ruby code with (which is fun because now you can recursively use the same interpreter)

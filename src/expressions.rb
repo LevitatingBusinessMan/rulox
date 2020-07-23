@@ -110,3 +110,16 @@ class Logical
 
 end
 
+class Ruby
+	attr_reader :code
+
+	def initialize code
+		@code = code
+	end
+
+	def accept visitor
+		visitor.visitRubyExpr self
+	end
+
+end
+

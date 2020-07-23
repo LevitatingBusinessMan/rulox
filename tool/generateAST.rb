@@ -11,7 +11,8 @@ expressions = {
 	"Variable"		=> ["name"],
 	"Assignment" 	=> ["name", "expression"],
 	"Ternary"		=> ["condition", "first", "second"],
-	"Logical"		=> ["left", "operator", "right"]
+	"Logical"		=> ["left", "operator", "right"],
+	"Ruby"			=> ["code"]
 }
 
 statements = {

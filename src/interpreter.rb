@@ -15,6 +15,10 @@ class Interpreter
 		end
 	end
 
+	def self.visitRubyExpr expr
+		eval (evaluate expr.code).to_s
+	end
+
 	def self.visitLogicalExpr expr
 		left = evaluate expr.left
 
