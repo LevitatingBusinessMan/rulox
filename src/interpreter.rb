@@ -26,7 +26,7 @@ class Interpreter
 	def self.visitLogicalExpr expr
 		left = evaluate expr.left
 
-		if expr.operator.type == :OR
+		if operator.type == :OR
 			return left if truthy? left
 		
 		# AND
@@ -105,46 +105,51 @@ class Interpreter
 	end
 
 	def self.visitBinaryExpr expr
+		operator = expr.operator
 		left = evaluate expr.left
 		right = evaluate expr.right
 
-		case expr.operator.type
-			when :MINUS
-				Checker.number expr.operator, right
+		case operator.type
+			when :MINUS, :MINUS_EQUAL
+				Checker.number operator, left, right
 				left - right
 			when :SLASH
-				Checker.number expr.operator, right
+				Checker.number operator, left, right
 
 				# Don't divide by zero
 				if right == 0
-					raise LoxRuntimeError.new expr.operator, "Dividing by zero is not allowed"
+					raise LoxRuntimeError.new operator, "Dividing by zero is not allowed"
 				end
 
 				left / right
 			when :ASTERISk
-				Checker.number expr.operator, right
+				Checker.number operator, left, right
 				left * right
-			when :PLUS
-
-				if left.class == String && right.class == String || left.class == Integer && right.class == Integer
-					left + right
-				else
-					raise LoxRuntimeError.new expr.operator, "Operands must both be numbers or strings"
+			when :PLUS, :PLUS_EQUAL
+				Checker.number_or_string operator, left, right
+				
+				if left.class == String && right.class == Integer
+					return left + right.to_s
 				end
 				
+				if left.class == Integer && right.class == String
+					raise LoxRuntimeError.new operator, "Cannot add string to integer"
+				end
+
+				left + right
 
 			#comparison
 			when :GREATER
-				Checker.number expr.operator, right
+				Checker.number operator, left, right
 				left > right
 			when :GREATER_EQUAL
-				Checker.number expr.operator, right
+				Checker.number operator, left, right
 				left >= right
 			when :LESS
-				Checker.number expr.operator, right
+				Checker.number operator, left, right
 				left < right
 			when :LESS_EQUAL
-				Checker.number expr.operator, right
+				Checker.number operator, left, right
 				left <= right
 			when :BANG_EQUAL
 				equal? left, right
@@ -165,9 +170,9 @@ class Interpreter
 	def self.visitUnaryExpr expr
 		right = evaluate expr.right
 
-		case expr.operator.type
+		case operator.type
 			when :MINUS
-				Checker.number expr.operator, right
+				Checker.number operator, right
 				-right
 			when :BANG
 				!truthy? right
@@ -193,7 +198,11 @@ end
 class Checker
 
 	def self.number operator, *operands
-		raise LoxRuntimeError.new operator, "Operand must be a number" if !operands.all? {|op| op.class == Integer}
+		raise LoxRuntimeError.new operator, "Operands must be a number" if !operands.all? {|op| op.class == Integer}
+	end
+
+	def self.number_or_string operator, *operands
+		raise LoxRuntimeError.new operator, "Operands must be a number or string" if !operands.all? {|op| op.class == Integer || op.class == String}
 	end
 
 end

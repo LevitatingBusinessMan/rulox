@@ -151,17 +151,22 @@ class Parser
 	def self.assignment
 		expr = ternary;
 
-		if match :EQUAL
-			eq = previous
+		if match :EQUAL or match :PLUS_EQUAL or match :MINUS_EQUAL
+			operator = previous
 			value = expression
 
 			# Turn left hand into token (l-value)
 			if expr.class == Variable
 				name = expr.name
-				return Assignment.new(name, value)
+
+				if  operator.type == :EQUAL
+					return Assignment.new(name, value) 
+				else 
+					return Assignment.new(name, Binary.new(expr, operator, value))
+				end
 			end
 
-			error eq, "Invalid assignment target"
+			error operator, "Invalid assignment target"
 		end
 
 		expr

@@ -23,6 +23,7 @@ Additional stuff (that weren't challenges in the book):
 * Ternary operator
 * `ruby` keyword to evaluate ruby code with (which is fun because now you can recursively use the same interpreter)
 * Escaping with `\` in strings
+* `+=` and `-=` operators
 
 
 Run with `ruby src/main.rb <filename>` or without a filename for the REPL

@@ -63,8 +63,6 @@ class Scanner
 				when '}'; addToken(:RIGHT_BRACE)
 				when ','; addToken(:COMMA)
 				when '.'; addToken(:DOT)
-				when '-'; addToken(:MINUS)
-				when '+'; addToken(:PLUS)
 				when ';'; addToken(:SEMICOLON)
 				when ':'; addToken(:COLON)
 				when '*'; addToken(:ASTERISk)
@@ -73,6 +71,8 @@ class Scanner
 				when '='; addToken(match("=") ? :EQUAL_EQUAL : :EQUAL)
 				when '<'; addToken(match("=") ? :LESS_EQUAL : :LESS)
 				when '>'; addToken(match("=") ? :GREATER_EQUAL : :GREATER)
+				when '-'; addToken(match("=") ? :MINUS_EQUAL : :MINUS)
+				when '+'; addToken(match("=") ? :PLUS_EQUAL : :PLUS)
 				when '|'; if match("|") then addToken(:OR) else unexpected end
 				when '&'; if match("&") then addToken(:AND)  else unexpected end
 				when '/'
