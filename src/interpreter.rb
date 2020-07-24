@@ -15,6 +15,10 @@ class Interpreter
 		end
 	end
 
+	def self.visitWhileStmt stmt
+		execute stmt.body while truthy? evaluate stmt.condition
+	end
+
 	def self.visitRubyExpr expr
 		eval (evaluate expr.code).to_s
 	end

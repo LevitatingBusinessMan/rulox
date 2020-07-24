@@ -20,7 +20,8 @@ statements = {
 	"PrintStmt"			=> ["expression"],
 	"VarDecl"			=> ["name", "initializer"],
 	"Block"				=> ["statements"],
-	"IfStmt"			=> ["condition", "thenBranch", "elseBranch"]
+	"IfStmt"			=> ["condition", "thenBranch", "elseBranch"],
+	"While"				=> ["condition", "body"]
 }
 
 def write type, list

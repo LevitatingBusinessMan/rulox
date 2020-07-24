@@ -66,3 +66,33 @@ class IfStmt
 
 end
 
+class While
+	attr_reader :condition, :body
+
+	def initialize condition, body
+		@condition = condition
+		@body = body
+	end
+
+	def accept visitor
+		visitor.visitWhileStmt self
+	end
+
+end
+
+class For
+	attr_reader :initializer, :condition, :increment, :body
+
+	def initialize initializer, condition, increment, body
+		@initializer = initializer
+		@condition = condition
+		@increment = increment
+		@body = body
+	end
+
+	def accept visitor
+		visitor.visitForStmt self
+	end
+
+end
+

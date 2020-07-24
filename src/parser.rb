@@ -29,7 +29,7 @@ class Parser
 	#declaration → varDecl | statement
 	def self.decleration
 		begin
-			return varDecleration if match :VAR
+			return varDecl if match :VAR
 			return statement
 		rescue ParseError => error
 			synchronize
@@ -38,7 +38,7 @@ class Parser
 	end
 
 	#varDecl → "var" IDENTIFIER ( "=" expression )? ";"
-	def self.varDecleration
+	def self.varDecl
 		name = assume :IDENTIFIER, "Expected variable name"
 		
 		#if value is set
@@ -50,12 +50,50 @@ class Parser
 		VarDecl.new name, initializer
 	end
 
-	#statement → printStmt | exprStmt | ifStmt | block
+	#statement → printStmt | exprStmt | ifStmt | block | whileStmt | forStmt
 	def self.statement
 		return ifStmt if match :IF
 		return printStmt if match :PRINT
 		return block if match :LEFT_BRACE
+		return whileStmt if match :WHILE
+		return forStmt if match :FOR
 		return exprStmt
+	end
+
+	#forStmt -> "for" "(" (varDecl | exprStmt | ";") expression? ";" expression? ")" statement;
+	def self.forStmt
+		assume :LEFT_PAREN, "Expected '(' after 'for' keyword"
+
+		if match :SEMICOLON
+			initializer = nil
+		elsif match :VAR
+			initializer = varDecl
+		else
+			initializer = exprStmt
+		end 
+
+		if match :SEMICOLON
+			condition = nil
+		elsif condition = expression
+		end
+
+		assume :SEMICOLON, "Expected ';' after loop condition"
+
+		if match :SEMICOLON
+			increment = nil
+		elsif increment = expression
+		end
+
+		assume :RIGHT_PAREN, "Expected ')' after 'for' clauses"
+
+		body = statement
+
+		body = Block.new [body, ExpressionStmt.new(increment)]
+
+		condition = Literal.new true if !condition
+		body = While.new condition, body
+
+		body = Block.new [initializer, body] if initializer
 	end
 
 	#ifStmt "if" "(" expression ")" statement ("else" statement)?
@@ -91,6 +129,17 @@ class Parser
 		expr = expression
 		assume :SEMICOLON, "Expected ';' after expression"
 		ExpressionStmt.new expr
+	end
+
+	#whileStmt -> "while" "(" expression ")" statement
+	def self.whileStmt
+		assume :LEFT_PAREN, "Expected '(' after 'while' keyword"
+		condition = expression
+		assume :RIGHT_PAREN, "Expected ') after 'while' condition"
+
+		body = statement
+
+		While.new condition, body
 	end
 
 	#expression → assignment
