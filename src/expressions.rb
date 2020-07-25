@@ -123,3 +123,18 @@ class Ruby
 
 end
 
+class Call
+	attr_reader :callee, :arguments, :close_paren
+
+	def initialize callee, arguments, close_paren
+		@callee = callee
+		@arguments = arguments
+		@close_paren = close_paren
+	end
+
+	def accept visitor
+		visitor.visitCallExpr self
+	end
+
+end
+

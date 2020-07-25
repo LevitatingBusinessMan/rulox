@@ -9,8 +9,8 @@ class Environment
 		@parent = parent
 	end
 
-	def define identifierToken, value
-		@values[identifierToken.lexeme] = value
+	def define name, value
+		@values[name] = value
 	end
 
 	#redefining

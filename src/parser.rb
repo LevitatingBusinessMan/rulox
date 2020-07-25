@@ -26,10 +26,11 @@ class Parser
 		end
 	end
 
-	#declaration → varDecl | statement
+	#declaration → varDecl | funDecl | statement
 	def self.decleration
 		begin
 			return varDecl if match :VAR
+			return funDecl if match :FUN
 			return statement
 		rescue ParseError => error
 			synchronize
@@ -48,6 +49,13 @@ class Parser
 		assume :SEMICOLON, "Expect ';' after variable decleration"
 
 		VarDecl.new name, initializer
+	end
+
+	#funDecl -> "fun" function
+	#function IDENTIFIER "(" parameters ")" block
+	#parameters → IDENTIFIER ( "," IDENTIFIER )*
+	def self.funDecl
+		
 	end
 
 	#statement → printStmt | exprStmt | ifStmt | block | whileStmt | forStmt
@@ -278,14 +286,34 @@ class Parser
 		ruby
 	end
 
-	#ruby -> "ruby" expression | primary
+	#ruby -> "ruby" expression | call
 	def self.ruby
 		if match :RUBY
 			code = expression
 			return Ruby.new(code)
 		end
 
-		primary
+		call
+	end
+	
+	#call  → primary ( "(" arguments? ")" )*
+	#arguments → expression ( "," expression )*
+	def self.call
+		expr = primary
+
+		while match(:LEFT_PAREN)
+			arguments = []
+			if !check :RIGHT_PAREN
+				arguments.push expression
+				arguments.push expression while match :COMMA
+			end
+			
+			close_paren = assume :RIGHT_PAREN, "Expected ')' after call arguments"
+
+			expr = Call.new expr, arguments ,close_paren
+		end
+
+		expr
 	end
 
 	#primary → NUMBER | STRING | "false" | "true" | "nil" | "(" expression ")" | IDENTIFIER
