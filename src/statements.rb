@@ -80,3 +80,18 @@ class While
 
 end
 
+class FunDecl
+	attr_reader :name, :parameters, :body
+
+	def initialize name, parameters, body
+		@name = name
+		@parameters = parameters
+		@body = body
+	end
+
+	def accept visitor
+		visitor.visitFunDeclStmt self
+	end
+
+end
+

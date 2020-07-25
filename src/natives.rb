@@ -1,8 +1,8 @@
-require_relative "./function"
+require_relative "./callable"
 
 def addNatives environment
 
-    clock = Function.new "clock", [], Proc.new { Time.now.to_i }
+    clock = NativeFunction.new "clock", [], Proc.new { Time.now.to_i }
     @environment.define "clock", clock
 
 end

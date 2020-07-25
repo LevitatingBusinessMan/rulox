@@ -1,7 +1,7 @@
 require_relative "./runtimeError"
 require_relative "./logger"
 require_relative "./environment"
-require_relative "./function"
+require_relative "./callable"
 require_relative "./natives"
 
 class Interpreter
@@ -11,7 +11,7 @@ class Interpreter
 	addNatives @environment
 
 	def self.interpret statements
-		clock = Function.new "clock", [], Proc.new { Time.now.to_i }
+		clock = NativeFunction.new "clock", [], Proc.new { Time.now.to_i }
 		@globals.define "clock", clock
 
 		begin
@@ -23,10 +23,15 @@ class Interpreter
 		end
 	end
 
+	def self.visitFunDeclStmt stmt
+		function = Function.new stmt
+		@environment.define stmt.name.lexeme, function
+	end
+
 	def self.visitCallExpr expr
 		function = evaluate expr.callee
 
-		raise LoxRuntimeError.new expr.close_paren, "Can't call non-function" if function.class != Function
+		raise LoxRuntimeError.new expr.close_paren, "Can't call non-function" if !function.is_a? Callable
 
 		arguments = expr.arguments.map &method(:evaluate)
 
@@ -203,9 +208,13 @@ class Interpreter
 
 	end
 
-	def self.executeBlock statements
+	def self.executeBlock statements,  environment=nil
 		previous_environment = @environment
-		@environment = Environment.new @environment
+		if !environment
+			@environment = Environment.new @environment 
+		else
+			@environment = environment
+		end
 
 		statements.each do |stmt|
 			stmt.accept self
@@ -214,6 +223,11 @@ class Interpreter
 		# discard current env and use previous
 		@environment = previous_environment
 
+	end
+
+	# getter function
+	def self.globals
+		@globals
 	end
 
 end

@@ -25,7 +25,8 @@ statements = {
 	"VarDecl"			=> ["name", "initializer"],
 	"Block"				=> ["statements"],
 	"IfStmt"			=> ["condition", "thenBranch", "elseBranch"],
-	"While"				=> ["condition", "body"]
+	"While"				=> ["condition", "body"],
+	"FunDecl"			=> ["name", "params", "body"]
 }
 
 def write type, list

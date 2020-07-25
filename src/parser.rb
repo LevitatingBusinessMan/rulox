@@ -30,7 +30,7 @@ class Parser
 	def self.decleration
 		begin
 			return varDecl if match :VAR
-			return funDecl if match :FUN
+			return declareFunction "function" if match :FUN
 			return statement
 		rescue ParseError => error
 			synchronize
@@ -54,8 +54,25 @@ class Parser
 	#funDecl -> "fun" function
 	#function IDENTIFIER "(" parameters ")" block
 	#parameters → IDENTIFIER ( "," IDENTIFIER )*
-	def self.funDecl
+	def self.declareFunction kind
+		name = assume :IDENTIFIER, "Expected #{kind} name"
+
+		assume :LEFT_PAREN, "Expected '(' after #{kind} name"
+		parameters = []
+		if !check :RIGHT_PAREN
+			parameters.push assume :IDENTIFIER, "Expected parameters name"
+			while match :COMMA
+				parameters.push assume :IDENTIFIER, "Expected parameters name"
+			end
+		end
+		assume :RIGHT_PAREN, "Expected ')' after #{kind} parameters"
 		
+		assume :LEFT_BRACE, "Expected '{' before #{kind} body"
+
+		body = block
+
+		FunDecl.new name, parameters, body
+
 	end
 
 	#statement → printStmt | exprStmt | ifStmt | block | whileStmt | forStmt
