@@ -3,6 +3,7 @@ require_relative "./logger"
 require_relative "./environment"
 require_relative "./callable"
 require_relative "./natives"
+require_relative "./returnError"
 
 class Interpreter
 	@globals = Environment.new
@@ -23,6 +24,11 @@ class Interpreter
 		end
 	end
 
+	def self.visitReturnStmt stmt
+		value = stmt.expression ? evaluate(stmt.expression) : nil
+		raise ReturnError.new value
+	end
+
 	def self.visitFunDeclStmt stmt
 		function = Function.new stmt
 		@environment.define stmt.name.lexeme, function
@@ -40,7 +46,7 @@ class Interpreter
 				"#{function.name} expected #{function.arity} arguments but received #{arguments.length}"
 		end
 		
-		function.call self, arguments
+		return function.call self, arguments
 	end
 
 	def self.visitWhileStmt stmt
@@ -111,7 +117,7 @@ class Interpreter
 		if value.class == NilClass
 			puts "nil" 
 		else
-			puts evaluate stmt.expression
+			puts value
 		end
 	end
 

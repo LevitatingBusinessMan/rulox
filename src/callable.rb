@@ -1,5 +1,6 @@
 require_relative "./runtimeError"
 require_relative "./environment"
+require_relative "./returnError"
 
 class Callable
     attr_reader :name, :arity
@@ -32,7 +33,13 @@ class Function < Callable
             environment.define parameter.lexeme, arguments[index]
         }
 
-        interpreter.executeBlock @body.statements, environment
+        begin
+            interpreter.executeBlock @body.statements, environment
+        rescue ReturnError => error
+            return error.value
+        end
+
+        return nil
     end
 
 end

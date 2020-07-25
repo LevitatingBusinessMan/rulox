@@ -34,6 +34,7 @@ class Environment
 		# Try parent block instead
 		return @parent.get identifierToken if @parent
 
+		raise "ASFAF"
 		raise LoxRuntimeError.new identifierToken, "Undefined variable #{name}"
 	end
 

@@ -9,7 +9,7 @@ def run(source)
 	return if !tokens
 
 	statements = Parser.parse tokens
-	return if statements.include? nil
+	return if !statements
 
 	Interpreter.interpret(statements)
 

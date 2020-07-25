@@ -8,11 +8,12 @@ class Parser
 	def self.parse(tokens)
 		@tokens = tokens
 		@index = 0
+		@failed = false
 		statements = []
 
 		statements.push decleration() while current.type != :EOF
 
-		statements	
+		return @failed ? nil : statements
 	end
 
 	# For the REPL, parse only expression
@@ -34,7 +35,7 @@ class Parser
 			return statement
 		rescue ParseError => error
 			synchronize
-			return nil
+			@failed = true
 		end
 	end
 
@@ -75,14 +76,25 @@ class Parser
 
 	end
 
-	#statement → printStmt | exprStmt | ifStmt | block | whileStmt | forStmt
+	#statement → printStmt | exprStmt | ifStmt | block | whileStmt | forStmt | returnStmt
 	def self.statement
 		return ifStmt if match :IF
 		return printStmt if match :PRINT
 		return block if match :LEFT_BRACE
 		return whileStmt if match :WHILE
 		return forStmt if match :FOR
+		return returnStmt if match :RETURN
 		return exprStmt
+	end
+
+	#returnStmt → "return" expression? ";"
+	def self.returnStmt
+		keyword = previous
+		value = nil
+		value = expression if !check :SEMICOLON
+
+		assume :SEMICOLON, "Expected ';' after return statement"
+		ReturnStmt.new keyword, value
 	end
 
 	#forStmt -> "for" "(" (varDecl | exprStmt | ";") expression? ";" expression? ")" statement;

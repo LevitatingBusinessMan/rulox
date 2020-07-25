@@ -26,7 +26,8 @@ statements = {
 	"Block"				=> ["statements"],
 	"IfStmt"			=> ["condition", "thenBranch", "elseBranch"],
 	"While"				=> ["condition", "body"],
-	"FunDecl"			=> ["name", "params", "body"]
+	"FunDecl"			=> ["name", "parameters", "body"],
+	"ReturnStmt"		=> ["keyword", "expression"]
 }
 
 def write type, list

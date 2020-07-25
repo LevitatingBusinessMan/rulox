@@ -95,3 +95,17 @@ class FunDecl
 
 end
 
+class ReturnStmt
+	attr_reader :keyword, :expression
+
+	def initialize keyword, expression
+		@keyword = keyword
+		@expression = expression
+	end
+
+	def accept visitor
+		visitor.visitReturnStmt self
+	end
+
+end
+
