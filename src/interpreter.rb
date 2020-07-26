@@ -220,21 +220,18 @@ class Interpreter
 		previous_environment = @environment
 		if !environment
 			@environment = Environment.new @environment
-			p "using environment child"
 		else
-			p "using new environment"
 			@environment = environment
 		end
 
-		#Problem, this function exits before resolving the envionment
-		#When a return happens
-		statements.each do |stmt|
-			stmt.accept self
+		begin
+			statements.each do |stmt|
+				stmt.accept self
+			end
+		ensure
+			# discard current env and use previous
+			@environment = previous_environment
 		end
-
-		# discard current env and use previous
-		@environment = previous_environment
-		p "discarding environment"
 	end
 
 	# getter function
