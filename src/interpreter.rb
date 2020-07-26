@@ -39,6 +39,7 @@ class Interpreter
 
 		raise LoxRuntimeError.new expr.close_paren, "Can't call non-function" if !function.is_a? Callable
 
+		# this is done while in old calls scope?
 		arguments = expr.arguments.map &method(:evaluate)
 
 		if function.arity != arguments.length
@@ -202,6 +203,7 @@ class Interpreter
 	end
 
 	def self.visitUnaryExpr expr
+		operator = expr.operator
 		right = evaluate expr.right
 
 		case operator.type
@@ -217,18 +219,22 @@ class Interpreter
 	def self.executeBlock statements,  environment=nil
 		previous_environment = @environment
 		if !environment
-			@environment = Environment.new @environment 
+			@environment = Environment.new @environment
+			p "using environment child"
 		else
+			p "using new environment"
 			@environment = environment
 		end
 
+		#Problem, this function exits before resolving the envionment
+		#When a return happens
 		statements.each do |stmt|
 			stmt.accept self
 		end
 
 		# discard current env and use previous
 		@environment = previous_environment
-
+		p "discarding environment"
 	end
 
 	# getter function
