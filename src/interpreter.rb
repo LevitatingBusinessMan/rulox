@@ -30,7 +30,7 @@ class Interpreter
 	end
 
 	def self.visitFunDeclStmt stmt
-		function = Function.new stmt
+		function = Function.new stmt, @environment
 		@environment.define stmt.name.lexeme, function
 	end
 

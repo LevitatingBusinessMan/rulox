@@ -16,11 +16,12 @@ class Callable
 end
 
 class Function < Callable
-    def initialize funDecl
+    def initialize funDecl, closure
         @name = funDecl.name.lexeme
         @arity = funDecl.parameters.length
         @parameters = funDecl.parameters
         @body = funDecl.body
+        @closure = closure
     end
 
     def to_s
@@ -28,7 +29,7 @@ class Function < Callable
     end
 
     def call interpreter, arguments
-        environment = Environment.new interpreter.globals
+        environment = Environment.new @closure
         @parameters.each_with_index {|parameter, index|
             environment.define parameter.lexeme, arguments[index]
         }
