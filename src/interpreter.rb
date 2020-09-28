@@ -8,13 +8,13 @@ require_relative "./returnError"
 class Interpreter
 	@globals = Environment.new
 	@environment = @globals
+	@locals = []
+
+	@use_resolver = true
 
 	addNatives @environment
 
 	def self.interpret statements
-		clock = NativeFunction.new "clock", [], Proc.new { Time.now.to_i }
-		@globals.define "clock", clock
-
 		begin
 			statements.each do |stmt|
 				execute stmt
@@ -22,6 +22,10 @@ class Interpreter
 		rescue LoxRuntimeError => error
 			Logger.runtime_error error
 		end
+	end
+
+	def self.resolve expr, depth
+		@locals.put {:expr => expr, :depth, depth}
 	end
 
 	def self.visitReturnStmt stmt

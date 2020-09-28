@@ -1,5 +1,5 @@
-require_relative "./expressions"
-require_relative "./statements"
+require_relative "./generated/expressions"
+require_relative "./generated/statements"
 require_relative "./logger"
 require_relative "./parseError"
 

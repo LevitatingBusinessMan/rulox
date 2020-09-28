@@ -1,7 +1,7 @@
 require_relative "./scanner"
 require_relative "./parser"
-require_relative "./astPrinter"
 require_relative "./interpreter"
+require_relative "./resolver"
 
 def run(source)
 
@@ -11,6 +11,7 @@ def run(source)
 	statements = Parser.parse tokens
 	return if !statements
 
+	Resolver.start Interpreter, statements
 	Interpreter.interpret(statements)
 
 end
@@ -23,6 +24,6 @@ def evaluate tokens
 	expression = Parser.parseExpression tokens
 	return if !expression
 
-	require_relative "./statements"
+	require_relative "./generated/statements"
 	Interpreter.interpret [PrintStmt.new(expression)]
 end

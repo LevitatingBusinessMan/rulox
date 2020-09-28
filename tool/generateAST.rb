@@ -32,8 +32,8 @@ statements = {
 
 def write type, list
 
-	@file = "expressions.rb" if type == "Expr"
-	@file = "statements.rb" if type == "Stmt"
+	@file = "generated/expressions.rb" if type == "Expr"
+	@file = "generated/statements.rb" if type == "Stmt"
 
 	path = @dir.join @file
 	File.delete path
