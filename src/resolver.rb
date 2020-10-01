@@ -8,7 +8,7 @@ class Resolver
 
 	def self.start interpreter, statements
 		@interpreter = interpreter
-		resolve statements
+		statements.each {|stmt| resolve stmt}
 	end
 
 	def self.resolve node
@@ -16,24 +16,27 @@ class Resolver
 	end
 
 	def self.begin_scope
-		scopes.push {}
+		@scopes.push({})
 	end
 
 	def self.end_scope
-		scopes.pop
+		@scopes.pop
 	end
 
 	def self.declare name
-		return if scopes.empty?
+		return if @scopes.empty?
 
-		scope = scopes.last
+		scope = @scopes.last
+
+		Logger.errort(name, "Cannot declare variable twice in the same scope") if scope[name.lexeme]
+
 		scope[name.lexeme] = false
 
 	end
 
 	def self.define name
-		return if scopes.empty?
-		scope = scopes.last
+		return if @scopes.empty?
+		scope = @scopes.last
 		scope[name.lexeme] = true
 	end
 
@@ -47,13 +50,13 @@ class Resolver
 
 	def self.visitVarDeclStmt stmt
 		declare stmt.name
-		resolve stmt.intitializer if stmt.intitializer
+		resolve stmt.initializer if stmt.initializer
 		define stmt.name
 	end
 
 	#http://craftinginterpreters.com/resolving-and-binding.html#resolving-variable-expressions
 	def self.visitVariableExpr expr
-		if !scope.empty? and scopes.last.get(expr.name.lexeme) == false
+		if !@scopes.empty? and @scopes.last[expr.name.lexeme] == false
 			Logger.errort(expr.name, "Cannot read local variable in its own initializer")
 		end
 
@@ -62,8 +65,8 @@ class Resolver
 
 	#http://craftinginterpreters.com/resolving-and-binding.html#resolving-variable-expressions
 	def self.resolveLocal expr, name
-		scope_index = scopes.find_index {|scope| scope.key?(name.lexeme)}
-		@interpreter.resolve(expr, scope.length- 1 - scope_index) if scope_index
+		scope_index = @scopes.find_index {|scope| scope.key?(name.lexeme)}
+		@interpreter.resolve(expr, @scopes.length- 1 - scope_index) if scope_index
 
 		# Must be global
 	end
@@ -75,7 +78,7 @@ class Resolver
 	end
 
 	#http://craftinginterpreters.com/resolving-and-binding.html#resolving-function-declarations
-	def self.visitFunctionStmt stmt
+	def self.visitFunDeclStmt stmt
 		declare stmt.name
 		define stmt.name
 		resolveFunction stmt

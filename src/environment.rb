@@ -37,4 +37,23 @@ class Environment
 		raise LoxRuntimeError.new identifierToken, "Undefined variable #{name}"
 	end
 
+	# Methods below replace get and assign when using the resolver
+	def get_at distance, identifierToken
+		get_ancestor(distance).values[identifierToken.lexeme]
+	end
+
+	def assigng_at distance, identifierToken, value
+		get_ancestor(distance).values[identifierToken.lexeme] = value
+	end
+
+	def get_ancestor distance
+		environment = self
+		distance.times do environment = environment.parent end
+		return environment
+	end
+
+	def values
+		@values
+	end
+
 end

@@ -25,7 +25,16 @@ class Interpreter
 	end
 
 	def self.resolve expr, depth
-		@locals.put {:expr => expr, :depth, depth}
+		@locals.push ({:expr => expr, :depth => depth})
+	end
+
+	def self.lookupVariable name, expr
+		local = @locals.find {|local| local[:expr] == expr}
+		if local
+			@environment.get_at local[:depth], name
+		else
+			@globals.get name
+		end
 	end
 
 	def self.visitReturnStmt stmt
@@ -98,12 +107,25 @@ class Interpreter
 
 	def self.visitAssignmentExpr expr
 		value = evaluate expr.expression
+		if @use_resolver
+			local = @locals.find {|local| local.expr == expr}
+			if local
+				@environment.assigng_at(local.depth, expr.name, value)
+			else
+				@globals.assign(local.depth, expr.name, value)
+			end
+		else
+			@environment.assign expr.name, value
+		end
 
-		@environment.assign expr.name, value
 	end
 
 	def self.visitVariableExpr expr
-		@environment.get expr.name
+		if @use_resolver
+			lookupVariable(expr.name, expr)
+		else
+			@environment.get expr.name
+		end
 	end
 
 	def self.visitVarDeclStmt stmt
