@@ -8,7 +8,7 @@ require_relative "./returnError"
 class Interpreter
 	@globals = Environment.new
 	@environment = @globals
-	@locals = []
+	@locals = {}
 
 	@use_resolver = true
 
@@ -25,13 +25,13 @@ class Interpreter
 	end
 
 	def self.resolve expr, depth
-		@locals.push ({:expr => expr, :depth => depth})
+		@locals[expr] = depth
 	end
 
 	def self.lookupVariable name, expr
-		local = @locals.find {|local| local[:expr] == expr}
-		if local
-			@environment.get_at local[:depth], name
+		depth = @locals[expr]
+		if depth
+			@environment.get_at depth, name
 		else
 			@globals.get name
 		end
@@ -108,11 +108,11 @@ class Interpreter
 	def self.visitAssignmentExpr expr
 		value = evaluate expr.expression
 		if @use_resolver
-			local = @locals.find {|local| local.expr == expr}
-			if local
-				@environment.assigng_at(local.depth, expr.name, value)
+			depth = @locals[expr]
+			if depth
+				@environment.assigng_at(depth, expr.name, value)
 			else
-				@globals.assign(local.depth, expr.name, value)
+				@globals.assign(expr.name, value)
 			end
 		else
 			@environment.assign expr.name, value
