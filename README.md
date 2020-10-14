@@ -33,3 +33,8 @@ Edit:
 It might be interesting to rewrite this to [Crystal](https://crystal-lang.org/) which is an LLVM based language with a syntax based on RubySpec
 This means I could write a standard library in C with relative ease, and the type system would be appreciated.
 Sadly currently crystal is missing some features I like and the devs refuse to accept my PRs
+
+### Performance
+In the first section of the chapter [Chunks of Bytecode](http://craftinginterpreters.com/chunks-of-bytecode.html), Bob says that on his laptop jlox takes 72 seconds to calculate the 40th fibonacci number. I ran the same code with rulox, and with some calculations I found that calculating the same number in rulox would take around 77.7 minutes. I am not sure why, or how rulox is that fucking slow but it is.
+
+That's with my cpu overclocked to 3.7Ghz, though somehow Ruby isn't taking total cpu time. More like 25% of its core.
