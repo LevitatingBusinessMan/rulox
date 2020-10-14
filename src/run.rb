@@ -12,7 +12,7 @@ def run(source)
 	return if !statements
 
 	Resolver.start Interpreter, statements
-	Interpreter.interpret(statements)
+	Interpreter.interpret(statements) if !Resolver.failed
 
 end
 

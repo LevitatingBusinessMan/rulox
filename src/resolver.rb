@@ -8,6 +8,7 @@ class Resolver
 
 	def self.start interpreter, statements
 		@interpreter = interpreter
+		@failed = false
 		statements.each {|stmt| resolve stmt}
 	end
 
@@ -28,7 +29,10 @@ class Resolver
 
 		scope = @scopes.last
 
-		Logger.errort(name, "Cannot declare variable twice in the same scope") if scope[name.lexeme]
+		if scope[name.lexeme]
+			Logger.errort(name, "Cannot declare variable twice in the same scope")
+			@failed = true
+		end
 
 		scope[name.lexeme] = false
 
@@ -58,6 +62,7 @@ class Resolver
 	def self.visitVariableExpr expr
 		if !@scopes.empty? and @scopes.last[expr.name.lexeme] == false
 			Logger.errort(expr.name, "Cannot read local variable in its own initializer")
+			@failed = true
 		end
 
 		resolveLocal expr, expr.name
@@ -125,7 +130,7 @@ class Resolver
 
 	def self.visitCallExpr expr
 		resolve expr.callee
-		expr.arguments.each resolve
+		expr.arguments.each &method(:resolve)
 	end
 
 	def self.visitGroupingExpr expr
@@ -137,6 +142,10 @@ class Resolver
 
 	def self.visitLogicalExpr expr
 		resolve expr.right
+	end
+
+	def self.failed
+		return @failed
 	end
 
 end
