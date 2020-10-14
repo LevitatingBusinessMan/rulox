@@ -35,7 +35,13 @@ class Function < Callable
         }
 
         begin
-            interpreter.executeBlock @body.statements, environment
+            # The JLOX code runs the block with the environment made in the lines above.
+            # This doesn't work for me because with my setup the resolver makes a scope for the function parameters
+            # and then a new scope for the block. This is simply because jlox uses a list of statements as the function body
+            # and I use a block statement class as a function body, which when gets resolved by the resolver creates an extra scope.
+            # So to sync the resolver and interpreter correctly, I have to also make a new scope here.
+            # Yes it took a while for me to debug this.
+            interpreter.executeBlock @body.statements, Environment.new(environment)
         rescue ReturnError => error
             return error.value
         end

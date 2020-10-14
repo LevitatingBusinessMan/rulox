@@ -270,11 +270,11 @@ end
 class Checker
 
 	def self.number operator, *operands
-		raise LoxRuntimeError.new operator, "Operands must be a number" if !operands.all? {|op| op.class == Integer}
+		raise LoxRuntimeError.new operator, "Operand must be a number" if !operands.all? {|op| op.class == Integer}
 	end
 
 	def self.number_or_string operator, *operands
-		raise LoxRuntimeError.new operator, "Operands must be a number or string" if !operands.all? {|op| op.class == Integer || op.class == String}
+		raise LoxRuntimeError.new operator, "Operand must be a number or string" if !operands.all? {|op| op.class == Integer || op.class == String}
 	end
 
 end

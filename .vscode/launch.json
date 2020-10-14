@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Debug Local File",
+            "name": "Run interpreter",
             "type": "Ruby",
             "request": "launch",
             "program": "${workspaceRoot}/src/main.rb",
