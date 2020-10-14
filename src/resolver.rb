@@ -77,7 +77,7 @@ class Resolver
 	end
 
 	#http://craftinginterpreters.com/resolving-and-binding.html#resolving-assignment-expressions
-	def self.visitAssignExpr expr
+	def self.visitAssignmentExpr expr
 		resolve expr.expression
 		resolveLocal(expr, expr.name)
 	end

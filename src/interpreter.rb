@@ -60,7 +60,7 @@ class Interpreter
 				"#{function.name} expected #{function.arity} arguments but received #{arguments.length}"
 		end
 		
-		return function.call self, arguments
+		return function.call self, arguments, expr.callee.name
 	end
 
 	def self.visitWhileStmt stmt

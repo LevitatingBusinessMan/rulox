@@ -34,6 +34,23 @@ It might be interesting to rewrite this to [Crystal](https://crystal-lang.org/) 
 This means I could write a standard library in C with relative ease, and the type system would be appreciated.
 Sadly currently crystal is missing some features I like and the devs refuse to accept my PRs
 
+### File IO
+Rulox has a couple of really basic native functions.
+For file IO there are 3 functions based around file descriptors.
+This way you can use just 3 functions to read/write files, write to stdout and stderr, and read input from stdin.
+```
+//Write to a file
+var fd =  openfd("myfile", "w");
+writefd(fd, "My data");
+
+//Read the same file
+fd = openfd("myfile", "r");
+print readfd(fd);
+
+//Read data from stdin
+print readfd(0);
+```
+
 ### Performance
 In the first section of the chapter [Chunks of Bytecode](http://craftinginterpreters.com/chunks-of-bytecode.html), Bob says that on his laptop jlox takes 72 seconds to calculate the 40th fibonacci number. I ran the same code with rulox, and with some calculations I found that calculating the same number in rulox would take around 77.7 minutes. I am not sure why, or how rulox is that fucking slow but it is.
 

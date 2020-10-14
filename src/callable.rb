@@ -11,7 +11,7 @@ class Callable
     def to_s
     end
 
-    def call interpreter, arguments
+    def call interpreter, arguments, name
     end
 end
 
@@ -28,7 +28,7 @@ class Function < Callable
         "<Function #{@name}>"
     end
 
-    def call interpreter, arguments
+    def call interpreter, arguments, name
         environment = Environment.new @closure
         @parameters.each_with_index {|parameter, index|
             environment.define parameter.lexeme, arguments[index]
@@ -52,11 +52,10 @@ class Function < Callable
 end
 
 class NativeFunction < Callable
-    def initialize name, arguments, body
+    def initialize name, body
         @name = name
-        @arity = arguments.length
-
         @proc = body
+        @arity = @proc.arity
 
     end
 
@@ -64,7 +63,11 @@ class NativeFunction < Callable
         "<Native Function #{@name}>"
     end
 
-    def call interpreter, arguments
-        @proc.call arguments
+    def call interpreter, arguments, name
+        begin
+            @proc.call *arguments
+        rescue => err
+            raise LoxRuntimeError.new(name, err.message)
+        end
     end
 end
