@@ -1,2 +1,4 @@
+.vscode
+.idea
 test.lox
 benchmark.lox
